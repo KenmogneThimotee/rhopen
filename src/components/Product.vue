@@ -1,26 +1,28 @@
 <template>
   <div v-if="currentTutorial" class="edit-form">
-    <h4>Tutorial</h4>
+    <h4>Products</h4>
     <form>
       <div class="form-group">
-        <label for="title">Title</label>
-        <input type="text" class="form-control" id="title"
-          v-model="currentTutorial.title"
+        <label for="title">Name</label>
+        <input type="text" class="form-control" id="name"
+          v-model="currentProduct.name"
         />
       </div>
       <div class="form-group">
-        <label for="description">Description</label>
-        <input type="text" class="form-control" id="description"
-          v-model="currentTutorial.description"
+        <label for="description">Price</label>
+        <input type="text" class="form-control" id="price"
+          v-model="currentProduct.price"
         />
       </div>
 
       <div class="form-group">
-        <label><strong>Status:</strong></label>
-        {{ currentTutorial.published ? "Published" : "Pending" }}
+        <label>Quantity:</label>
+        <input type="text" class="form-control" id="quantity"
+          v-model="currentProduct.quantity"
+        />
       </div>
     </form>
-
+    <!--
     <button class="badge badge-primary mr-2"
       v-if="currentTutorial.published"
       @click="updatePublished(false)"
@@ -32,15 +34,16 @@
     >
       Publish
     </button>
+    -->
 
     <button class="badge badge-danger mr-2"
-      @click="deleteTutorial"
+      @click="deleteProduct"
     >
       Delete
     </button>
 
     <button type="submit" class="badge badge-success"
-      @click="updateTutorial"
+      @click="updateProduct"
     >
       Update
     </button>
@@ -49,26 +52,26 @@
 
   <div v-else>
     <br />
-    <p>Please click on a Tutorial...</p>
+    <p>Please click on a Product...</p>
   </div>
 </template>
 
 <script>
-import TutorialDataService from "../services/TutorialDataService";
+import ProductDataService from "../services/ProductDataService";
 
 export default {
   name: "tutorial",
   data() {
     return {
-      currentTutorial: null,
+      currentProduct: null,
       message: ''
     };
   },
   methods: {
-    getTutorial(id) {
-      TutorialDataService.get(id)
+    getProduct(id) {
+      ProductDataService.get(id)
         .then(response => {
-          this.currentTutorial = response.data;
+          this.currentProduct = response.data;
           console.log(response.data);
         })
         .catch(e => {
@@ -84,10 +87,10 @@ export default {
         published: status
       };
 
-      TutorialDataService.update(this.currentTutorial.id, data)
+      ProductDataService.update(this.currentProduct.id, data)
         .then(response => {
           console.log(response.data);
-          this.currentTutorial.published = status;
+          this.currentProduct.published = status;
           this.message = 'The status was updated successfully!';
         })
         .catch(e => {
@@ -96,7 +99,7 @@ export default {
     },
 
     updateTutorial() {
-      TutorialDataService.update(this.currentTutorial.id, this.currentTutorial)
+      ProductDataService.update(this.currentProduct.id, this.currentProduct)
         .then(response => {
           console.log(response.data);
           this.message = 'The tutorial was updated successfully!';
@@ -107,10 +110,10 @@ export default {
     },
 
     deleteTutorial() {
-      TutorialDataService.delete(this.currentTutorial.id)
+      ProductDataService.delete(this.currentProduct.id)
         .then(response => {
           console.log(response.data);
-          this.$router.push({ name: "tutorials" });
+          this.$router.push({ name: "products" });
         })
         .catch(e => {
           console.log(e);
@@ -119,7 +122,7 @@ export default {
   },
   mounted() {
     this.message = '';
-    this.getTutorial(this.$route.params.id);
+    this.getProduct(this.$route.params.id);
   }
 };
 </script>
